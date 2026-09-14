@@ -17,10 +17,14 @@ That is expected — it records what produced them.
 
 The workflow label was removed from the header and `<title>` on 2026-09-14 — it
 duplicated the Report Type dropdown and would have labelled a Secondary Triage
-review as an Air Desk one the moment that workflow was added. The only place the
-workflow now appears is the Report Type options, where the user selects it, and
-`ACTIVE_WORKFLOW.name`, which names the exported DOCX. Both are correct as-is;
-the Report Type options gain entries when Secondary Triage lands.
+review as an Air Desk one. Report Type lists Air Desk Review plus placeholder
+entries for Secondary Triage Review, Remote Triage Review, Health Care
+Practitioner Review and Clinical Advice Review. Those four still use the Air
+Desk sections until their own forms land. The selected name is the preview and
+DOCX heading, and names the exported file. Saved JSON still uses the Air Desk
+workflow id, because that is the form that was filled. *Air Desk Review Request*
+was removed so there is only one Air Desk option; opening an older save that
+used it still works.
 
 The header version is written from `APP_CONFIG.version` at boot rather than typed
 into the markup, so it cannot drift from the version the saved JSON and the DOCX

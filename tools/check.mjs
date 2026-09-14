@@ -309,6 +309,24 @@ ok(/id="buildVersion"><\/small>/.test(src),
   'header version label is empty in markup and written from APP_CONFIG',
   'a hand-typed version or workflow name is back in the header');
 
+const reportSelect = /<select[^>]*id="reportType"[^>]*>([\s\S]*?)<\/select>/.exec(src)?.[1] || '';
+const reportOptions = [...reportSelect.matchAll(/<option[^>]*>([^<]*)<\/option>/g)].map(m => m[1].trim());
+const expectedReports = [
+  'Air Desk Review',
+  'Secondary Triage Review',
+  'Remote Triage Review',
+  'Health Care Practitioner Review',
+  'Clinical Advice Review',
+];
+ok(!reportOptions.includes('Air Desk Review Request'),
+  'Report Type keeps a single Air Desk option',
+  'Air Desk Review Request is still in the dropdown');
+ok(expectedReports.every(name => reportOptions.includes(name)) && reportOptions[0] === 'Air Desk Review',
+  `Report Type lists Air Desk plus ${expectedReports.length - 1} placeholder workflows`,
+  `got: ${reportOptions.join(', ') || 'none'}`);
+ok(expectedReports.every(name => src.includes(`name:'${name}'`)),
+  'WORKFLOW_REGISTRY names match the Report Type options');
+
 /* ------------------------------------------------------- deploy readiness -- */
 ok(!existsSync(join(REPO_DIR, 'clinical-hub-incident-review.zip')),
   'repo is the extracted app, not a zip upload',
