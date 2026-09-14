@@ -1,0 +1,18 @@
+{
+  "name": "clinical-hub-incident-review",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-file Clinical Hub incident review builder with DOCX export (Hato Hone St John).",
+  "type": "module",
+  "scripts": {
+    "check": "node tools/check.mjs",
+    "verify": "node tools/verify.mjs",
+    "test": "node tools/check.mjs && node tools/verify.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}

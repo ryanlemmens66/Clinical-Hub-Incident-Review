@@ -1,0 +1,39 @@
+# Runs the app's own check suite on every push and pull request.
+#
+# Both scripts already exit non-zero on failure, so there is nothing to
+# interpret here — this file only decides when they run. `check` needs no
+# dependencies at all; `verify` needs jsdom, which is the only reason for the
+# install step.
+#
+# Note this fires on a push to GitHub. It does NOT fire on a drag-and-drop
+# deploy to Netlify — nothing does. If you upload a folder by hand, run
+# `npm test` first; that is the only thing standing between you and shipping a
+# broken build that way.
+
+name: checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # `check` deliberately has no dependencies, so run it before installing
+      # anything. If the install ever breaks, the structural checks still ran.
+      - name: Static check
+        run: npm run check
+
+      - name: Install (jsdom, for the runtime check)
+        run: npm install --no-audit --no-fund
+
+      - name: Runtime verification
+        run: npm run verify

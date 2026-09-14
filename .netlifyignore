@@ -1,0 +1,12 @@
+# The public site is the app file, robots.txt, and the index.html copy created
+# at build time. Do not ship the check suite, docs, or GitHub metadata.
+.git
+.github
+.gitignore
+.netlify
+node_modules
+package.json
+package-lock.json
+tools
+*.md
+*.zip
