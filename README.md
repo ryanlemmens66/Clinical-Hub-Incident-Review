@@ -55,7 +55,7 @@ even if a rewrite is skipped.
 
 **Nothing leaves the browser and nothing is stored.** Review data lives in
 memory for as long as the page is open. The only things written to the device
-are the ones the user explicitly asks for: a saved audit JSON, or a generated
+are the ones the user explicitly asks for: a saved review JSON, or a generated
 DOCX.
 
 The file keeps its human-readable name so the same file can be handed out for
@@ -161,7 +161,7 @@ is the thing most likely to break in a way neither script would notice.
 `APP_CONFIG.version` is the single source, currently `1.0`. It reaches both
 exports:
 
-- **Saved audit JSON** — `createAuditEnvelope()` writes it as
+- **Saved review JSON** — `createAuditEnvelope()` writes it as
   `applicationVersion`, alongside `schemaVersion`, so a saved review records
   which build produced it and `migrateV1Audit()` knows what it is reading.
 - **Exported DOCX** — carried in `docProps/app.xml` as
