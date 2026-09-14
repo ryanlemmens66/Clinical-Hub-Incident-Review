@@ -329,8 +329,8 @@ ok(expectedReports.every(name => src.includes(`name:'${name}'`)),
 
 /* ------------------------------------------------------- deploy readiness -- */
 ok(!existsSync(join(REPO_DIR, 'clinical-hub-incident-review.zip')),
-  'repo is the extracted app, not a zip upload',
-  'Netlify would publish the archive instead of the HTML file');
+  'Git repo is the extracted app, not a zip sitting at the site root',
+  'A Git-connected Netlify site would publish that archive as a file. Drag-and-drop of a zip of the HTML is a different path and still works.');
 
 const pasteSelector = /PROSE_PASTE_SELECTOR='([^']+)'/.exec(src)?.[1] || '';
 const pasteIds = [...pasteSelector.matchAll(/#([A-Za-z][\w-]*)/g)].map(m => m[1]);

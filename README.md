@@ -69,14 +69,22 @@ missed. That copy is generated, not edited.
 
 ## Deployment
 
-Netlify. Connect this GitHub repo (not the zip). `netlify.toml` supplies the
-publish directory, a one-second structural check, Node 20, and the root rewrite.
-There is no framework build. At deploy time the named HTML file is also copied
-to `index.html` so `/` is served natively as well as via rewrite.
+Two Netlify paths, both valid:
 
-Do not upload `clinical-hub-incident-review.zip` as the site — Netlify would
-publish the archive, not the app. Upload the extracted folder, or connect the
-repo.
+**Drag-and-drop a zip** — this is the current desk workflow, and it works.
+Netlify extracts a zip of *site files* (the HTML, `netlify.toml`, `robots.txt`,
+and so on). Keep zipping those files the way you already do. After unzipping,
+the named HTML file (or `index.html`) should be at the top of the folder, not
+wrapped inside another zip.
+
+**Connect this GitHub repo** — that is a different path. A Git deploy publishes
+whatever sits in the repo; it does not unzip anything. `main` still contains
+only `clinical-hub-incident-review.zip`, so connecting Git *before* this PR
+lands would put that archive on the site as a downloadable file. After merge,
+the repo is the extracted app. `netlify.toml` then supplies the publish
+directory, a one-second structural check, Node 20, and the root rewrite, and
+copies the named HTML file to `index.html` so `/` is served natively as well
+as via rewrite.
 
 Three things in it are load-bearing:
 
