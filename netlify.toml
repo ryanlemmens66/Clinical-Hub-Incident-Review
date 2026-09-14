@@ -1,0 +1,94 @@
+# Netlify configuration for Clinical Hub Incident Review
+#
+# The application is a single self-contained HTML file that runs entirely in the
+# browser. There is no framework build and no server-side component. After the
+# structural check, the named HTML file is copied to index.html so the site
+# root is served natively as well as by rewrite.
+
+
+# The deploy is gated on the structural check. It needs no dependencies and
+# takes about a second, so a build that fails here failed on the file, not on
+# the environment — and a build that fails does not publish.
+#
+# This is the only automated gate that actually stops a bad deploy. A GitHub
+# Action reports a red tick but does not block Netlify, and a drag-and-drop
+# upload runs nothing at all. Delete the command line to go back to no build.
+[build]
+  publish = "."
+  command = "node tools/check.mjs && cp \"Clinical Hub Incident Review.html\" index.html"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Pretty URLs would rewrite the named HTML file into a space-bearing directory
+# URL. This tool is one file; leave it alone.
+[build.processing.html]
+  pretty_urls = false
+
+# ---------------------------------------------------------------------------
+# Routing
+#
+# The deployable file keeps its human-readable name so that the same file can be
+# distributed for offline use. Netlify serves index.html at the site root, so the
+# root is rewritten (status 200, not a 301) to the application file. The browser
+# address bar stays on "/" and the file is returned directly.
+# ---------------------------------------------------------------------------
+
+[[redirects]]
+  from = "/"
+  to = "/Clinical%20Hub%20Incident%20Review.html"
+  status = 200
+
+[[redirects]]
+  from = "/review"
+  to = "/Clinical%20Hub%20Incident%20Review.html"
+  status = 200
+
+# Kept from before the 2026-09-14 rename. Anyone who bookmarked /audit still
+# lands on the tool. Do not remove it to tidy up — a dead bookmark on a desk
+# tool reads as the tool being gone.
+[[redirects]]
+  from = "/audit"
+  to = "/Clinical%20Hub%20Incident%20Review.html"
+  status = 200
+
+# The file itself was renamed on 2026-09-14. Anyone holding a direct link to the
+# old filename would get a 404 without this; 301 sends them to the root so the
+# stale URL stops propagating.
+[[redirects]]
+  from = "/Clinical%20Hub%20Audit%20Review.html"
+  to = "/"
+  status = 301
+
+# ---------------------------------------------------------------------------
+# Security headers
+#
+# The application already ships a Content-Security-Policy <meta> tag. Sending the
+# same policy as an HTTP header is stronger: it applies before the document is
+# parsed, and frame-ancestors is only honoured as a header (it is ignored in a
+# meta tag), which is what actually prevents the tool being framed by another
+# site.
+#
+# script-src and style-src retain 'unsafe-inline' because the application is
+# deliberately a single file with inline script and style. This is constrained by
+# default-src 'none' and connect-src 'none', so no external code can be loaded and
+# no data can be sent anywhere.
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; img-src data: blob:; font-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+
+    # Keep a clinical tool out of search engine indexes.
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+    # The filename does not change between releases, so revalidate on each load
+    # rather than serving a stale build from cache after an update.
+    Cache-Control = "no-cache, must-revalidate"
